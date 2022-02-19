@@ -55,15 +55,23 @@ mandelKernel= EWK(
 )
 
 if __name__ == '__main__':
+    mySize = 2048
+    myDepth = 2048
+    myRange = 2
+
+    # t1 = time()
+    # mandel = simpleMandelbrot(mySize,mySize,-myRange,myRange,-myRange,myRange,myDepth)
+    # t2 = time()
+    # print(f'It took {t2 - t1} seconds to calculate on the Mandelbrot')
+
     t1 = time()
-    # mandel = simpleMandelbrot(512,512,-2,2,-2,2,256)
-    mandel = gpuMandelbrot(4096,4096,-2,2,-2,2,1024,2)
+    mandel = gpuMandelbrot(mySize,mySize,-myRange,myRange,-myRange,myRange,myDepth,2)
     t2 = time()
-    print(f'It took {t2 - t1} seconds to calculate the Mandelbrot')
+    print(f'It took {t2 - t1} seconds to calculate on the Mandelbrot')
 
     t1 = time()
     fig = plt.figure(1)
-    plt.imshow(mandel, extent=(-2,2,-2,2))
-    plt.savefig('mandelbrot.png', dpi=1000)
+    plt.imshow(mandel, extent=(-myRange,myRange,-myRange,myRange))
+    plt.savefig('mandelbrot.png', dpi=4000)
     t2 = time()
     print(f'It took {t2 - t1} seconds to dump the image')
