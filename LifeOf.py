@@ -58,14 +58,15 @@ __global__ void conway_ker(int *latticeOut, int *latticeIn)
 myLife = ker.get_function("conway_ker")
 
 def updateGpu(frameNum, img, newLattice_gpu, lattice_gpu, N):
-    myLife(newLattice_gpu, lattice_gpu, grid=(N/32, N/32, 1), block=(32,32,1))
+    myLife(newLattice_gpu, lattice_gpu, grid=(int(N/32), int(N/32), 1), block=(32,32,1))
     img.set_data(newLattice_gpu.get())
     lattice_gpu[:] = newLattice_gpu[:]
     return img
 
 if __name__ == '__main__':
     N = 256
-    lattice = np.int32( np.random.choice([1,0], N*N, p=[0.25,0.75]).reshape(N,N) )
+    P = 0.3
+    lattice = np.int32( np.random.choice([1,0], N*N, p=[P,1-P]).reshape(N,N) )
     lattice_gpu = gpuarray.to_gpu(lattice)
     newLattice_gpu = gpuarray.empty_like(lattice_gpu)
 
