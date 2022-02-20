@@ -39,7 +39,6 @@ __global__ void conway_ker(int *latticeOut, int *latticeIn)
             case 3: latticeOut[ _INDEX(x,y) ] = 1;
                 break;
             default: latticeOut[ _INDEX(x,y) ] = 0;
-                break;
         }
     }
     else if (latticeIn[ _INDEX(x,y) ] == 0)
@@ -49,7 +48,6 @@ __global__ void conway_ker(int *latticeOut, int *latticeIn)
             case 3: latticeOut[ _INDEX(x,y) ] = 1;
                 break;
             default: latticeOut[ _INDEX(x,y) ] = 0;
-                break;
         }
     }
 }
