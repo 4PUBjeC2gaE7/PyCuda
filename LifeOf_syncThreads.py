@@ -62,8 +62,15 @@ if __name__ == '__main__':
     N = 32
     P = 0.3
     lattice = np.int32( np.random.choice([1,0], N*N, p=[P,1-P]).reshape(N,N) )
+
+    fig = plt.figure(1)
+    plt.imshow(lattice)
+    plt.show()
+
     lattice_gpu = gpuarray.to_gpu(lattice)
     myLife(lattice_gpu, np.int32(1_000_000), grid=(1,1,1), block=(32,32,1))
 
-    fig = plt.figure(1)
-    plt.imshow(lattice_gpu.get())
+    latt_out = lattice_gpu.get()
+
+    plt.imshow(latt_out)
+    plt.show()
