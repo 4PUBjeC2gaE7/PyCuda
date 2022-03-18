@@ -23,9 +23,14 @@ __device__ int nbrs(int x, int y, int *in)
     );
 }
 
-__global__ void conway_ker(int *lattice, int iters)
+__global__ void conway_ker(int *pLattice, int iters)
 {
     int x = _X, y = _Y;
+    __shared__ int lattice[32*32];
+
+    lattice[_INDEX(x,y)] = pLattice[_INDEX(x,y)];
+    __syncthreads();
+
     for (int i = 0; i < iters; i++)
     {
         int n = nbrs(x, y, lattice);
@@ -53,6 +58,10 @@ __global__ void conway_ker(int *lattice, int iters)
         lattice[ _INDEX(x,y) ] = cellValue;
         __syncthreads();
     }
+
+    __syncthreads();
+    pLattice[_INDEX(x,y)] = lattice[_INDEX(x,y)];
+    __syncthreads();
 }
 """)
 
