@@ -63,8 +63,8 @@ def updateGpu(frameNum, img, newLattice_gpu, lattice_gpu, N):
 
 if __name__ == '__main__':
     N = 256
-    P = 0.3
-    lattice = np.int32( np.random.choice([1,0], N*N, p=[P,1-P]).reshape(N,N) )
+    P = 0.8
+    lattice = np.int32( np.random.choice([0,1], N*N, p=[P,1-P]).reshape(N,N) )
     lattice_gpu = gpuarray.to_gpu(lattice)
     newLattice_gpu = gpuarray.empty_like(lattice_gpu)
 
