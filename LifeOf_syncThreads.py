@@ -4,6 +4,7 @@ from pycuda import gpuarray
 from pycuda.compiler import SourceModule
 import numpy as np
 import matplotlib.pyplot as plt
+from time import time
 
 ker = SourceModule("""
 #define _X ( threadIdx.x + blockIdx.x * blockDim.x )
@@ -70,12 +71,18 @@ myLife = ker.get_function("conway_ker")
 if __name__ == '__main__':
     N = 32
     P = 0.3
+    Itr = 10_000_000
     lattice = np.int32( np.random.choice([1,0], N*N, p=[P,1-P]).reshape(N,N) )
 
+    t1 = time()
     lattice_gpu = gpuarray.to_gpu(lattice)
-    myLife(lattice_gpu, np.int32(1_000_000), grid=(1,1,1), block=(32,32,1))
-
+    t2 = time()
+    myLife(lattice_gpu, np.int32(Itr), grid=(1,1,1), block=(32,32,1))
+    t3 = time()
     latt_out = lattice_gpu.get()
+    t4 = time()
+    print(f'It took {(t3-t2)*1000:2.3f} ms to calculate {Itr} runs'
+        + f' and {(t4-t3 + t2-t1):2.6f} seconds to transfer data.')
 
     plt.rcParams["figure.figsize"] = [7.50, 3.50]
     plt.rcParams["figure.autolayout"] = True
