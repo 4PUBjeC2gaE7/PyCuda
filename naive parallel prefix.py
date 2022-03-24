@@ -44,8 +44,7 @@ __global__ void up_ker(double *x, double *x_old, int k)
 down_ker = SourceModule("""
 __global__ void down_ker(double *y, double *y_old, int k)
 {
-    int j = blockIdx.x*blockDim.x + threadIdx.x;
-
+    int tid = blockIdx.x*blockDim.x + threadIdx.x;
     int _2k = 1 << k;
     int _2k1 = 1 << (k+1);
     int j = tid * _2k1;
@@ -111,4 +110,4 @@ if __name__ == '__main__':
     print(f'GPU time: {(t2 - t1)*1000:2.4f}ms')
     print(f'CPU time: {(t3 - t2)*1000:2.4f}ms')
 
-    efficient_prefix(1024)
+    print(f'{efficient_prefix(testVec)}')
