@@ -28,11 +28,16 @@ def gpuMandelbrot(width, height, reLow, reHigh, imLow, imHigh, maxIter, upperBou
     imVals = np.matrix(np.linspace(imLow, imHigh,height), dtype=np.complex64) * 1j
     mandelLattice = np.array(reVals + imVals.transpose(), dtype=np.complex64)
     # copy complex lattice to the GPU
-    mandelLattice_gpu = gpuarray.to_gpu(mandelLattice)
+    mandelLattice_gpu = gpuarray.to_gpu_async(mandelLattice)
+    pycuda.autoinit.context.synchronize()
     # allocate output array on GPU
     mandelbrotGraph_gpu = gpuarray.empty(shape=mandelLattice.shape, dtype=np.float32)
+    # run GPU kernel
     mandelKernel(mandelLattice_gpu, mandelbrotGraph_gpu, np.int32(maxIter), np.float32(upperBound))
-    mandelbrotGraph = mandelbrotGraph_gpu.get()
+    pycuda.autoinit.context.synchronize()
+    # get data from GPU
+    mandelbrotGraph = mandelbrotGraph_gpu.get_async()
+    pycuda.autoinit.context.synchronize()
     return mandelbrotGraph
 
 mandelKernel= EWK(
